@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Mando - STM (Consulta)</title>
+    <link rel="icon" href="logo_STM.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* Estilos generales limpios */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eef2f7;
+        }
+        /* Estilos del Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 90%;
+            /* Aumentamos el ancho máximo para el modal de afiliación con más campos */
+            max-width: 700px; 
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Estilos de los botones de navegación */
+        .btn-custom {
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+            width: 100%; /* Asegura que el botón ocupe todo el espacio de su grid cell */
+        }
+        /* ESTILOS ACTIVOS (Azul Índigo por defecto para las vistas de tabla) */
+        .btn-custom.active-indigo {
+            background-color: #4f46e5 !important;
+            color: white !important;
+            border-color: #4f46e5;
+            box-shadow: 0 4px 15px -3px rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        /* ESTILO VERDE para Gestor de Usuarios */
+        .btn-custom.active-green {
+            background-color: #10b981 !important; /* Tailwind Green-600 */
+            color: white !important;
+            border-color: #10b981;
+            box-shadow: 0 4px 15px -3px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-custom:not(.active-indigo):not(.active-green) {
+            background-color: #ffffff;
+            color: #4f46e5;
+            border-color: #c7d2fe;
+        }
+        .btn-custom:not(.active-indigo):not(.active-green):hover {
+            background-color: #f5f6fa;
+            border-color: #a5b4fc;
+        }
+        
+        /* Ajuste para las cabeceras de la tabla */
+        #table-container th {
+            white-space: nowrap;
+        }
+
+        /* NUEVOS ESTILOS PARA EL LOGO */
+        .logo-container {
+            width: 4rem; 
+            height: 4rem; 
+            overflow: hidden;
+            border-radius: 9999px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); 
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <header class="mb-6 border-b-4 border-indigo-500 pb-2">
+            
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
+
+                <div class="flex items-center justify-start mb-4 md:mb-0">
+                    <div class="logo-container mr-4">
+                        <img src="logo_STM.png" alt="Logo Sindicato de Trabajadores Municipales" onerror="this.onerror=null; this.src='https://placehold.co/100x100/4f46e5/ffffff?text=STM'">
+                    </div>
+                    <div>
+                        <h1 class="text-3xl xs:text-3xl sm:text-4xl font-extrabold text-gray-800">
+                            Tablero de Mando <span class="text-indigo-600">STM</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-4"> 
+                    <span id="logged-in-username" class="text-gray-700 text-lg font-medium"></span> 
+                    <button 
+                        onclick="logout()"
+                        class="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition duration-150 shadow-md text-sm"
+                    >
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+            
+        </header>
+        
+        <div id="btn-group" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4 p-4 bg-white rounded-xl shadow-xl">
+            <button 
+                data-sheet="tabla_consulta"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg active-indigo"
+            >
+                <i class="fas fa-comments mr-2"></i> Consultas
+            </button>
+            <button 
+                data-sheet="gestor_afiliaciones_external"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg"
+            >
+                <i class="fas fa-user-plus mr-2"></i> Gestor Afiliaciones
+            </button>
+            <button 
+                data-sheet="gestor_novedades_external"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg"
+            >
+                <i class="fas fa-bullhorn mr-2"></i> Gestor Novedades
+            </button>
+            <button 
+                data-sheet="gestor_convenios_external"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg"
+            >
+                <i class="fas fa-handshake mr-2"></i> Gestor Convenios
+            </button>
+            <button 
+                data-sheet="credencial_qr"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg"
+            >
+                <i class="fas fa-id-card mr-2"></i> Generar Credencial
+            </button>
+            <button 
+                data-sheet="gestor_usuarios_external"
+                class="btn-custom py-3 px-4 text-sm sm:text-lg font-semibold rounded-full shadow-lg"
+            >
+                <i class="fas fa-user-friends mr-2"></i> Gestor de Usuarios
+            </button>
+        </div>
+        
+        <div class="flex justify-center mb-6 md:hidden"> 
+            <button 
+                onclick="logout()"
+                class="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition duration-150 shadow-lg text-lg"
+            >
+                Cerrar Sesión
+            </button>
+        </div>
+        <div id="data-table-view" class="bg-white p-6 rounded-xl shadow-2xl border-t-4 border-indigo-500">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2"> <span id="current-sheet-title" class="text-indigo-600">Tabla Consulta</span></h2>
+            <p id="data-loading-message" class="text-center text-indigo-600 font-medium py-8">Cargando datos desde base de datos...</p>
+            <div id="table-container" class="overflow-x-auto">
+                </div>
+        </div>
+    </div>
+
+    <div id="data-modal-overlay" class="modal-overlay">
+        <div class="modal-content w-full md:w-1/2 lg:w-1/3">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 id="modal-title" class="text-xl font-bold text-indigo-700">Detalles de la Fila</h3> 
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/24/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div id="modal-details" class="space-y-4">
+                </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end">
+                <button onclick="closeModal()" class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-150">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        
+        // --- 🚨 CÓDIGO DE VERIFICACIÓN DE SEGURIDAD 🚨 ---
+        // Chequea si la bandera de autenticación existe en el localStorage
+        if (localStorage.getItem('isAuthenticatedSTM') !== 'true') {
+            // Si no está autenticado, redirigir al login
+            window.location.href = 'index.html';
+        }
+        
+        // 🇦🇷 ¡CÓDIGO MODIFICADO Y CLAVE PARA EL PERMISO!
+        const username = localStorage.getItem('stm_username'); 
+        const userType = localStorage.getItem('stm_user_type'); // <-- ¡LEEMOS EL TIPO DE USUARIO!
+        const usernameElement = document.getElementById('logged-in-username');
+        
+        if (username && usernameElement) {
+            // 🇦🇷 Mostramos el nombre Y el permiso
+            usernameElement.textContent = `Usuario conectado: ${username} (${userType || 'N/A'})`; 
+        }
+        // --- FIN CÓDIGO DE VERIFICACIÓN / CARGA DE USUARIO ---
+        
+        // ¡IMPORTANTE! REEMPLAZÁ ESTO CON TU URL REAL DE APPS SCRIPT
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfNlhTU4hO8linQddyhVvd5rTrsAQxx1XvlsJO5tbBvUeyzczi1q-LbwU6-dSsLPvt9w/exec'; 
+        
+        const SHEET_ID = '1OZnWCvh9NpBaoZndAV1IPPqtNWgQnv8GMh6J2-l3wZo'; 
+        
+        // Solo queda el GID para tabla_consulta
+        const sheetGids = {
+            'tabla_consulta': '0',
+            'gestor_novedades_external': null,
+            'gestor_afiliaciones_external': null, 
+            'gestor_convenios_external': null, 
+            'credencial_qr': null,
+            // NO necesitamos GID para gestor_usuarios_external porque es una redirección
+        };
+
+        // Elementos de UI
+        const dataTableView = document.getElementById('data-table-view');
+        const buttons = document.querySelectorAll('#btn-group button'); 
+        const tableContainer = document.getElementById('table-container');
+        const dataLoadingMessage = document.getElementById('data-loading-message');
+        const currentSheetTitle = document.getElementById('current-sheet-title');
+        const dataModalOverlay = document.getElementById('data-modal-overlay');
+        const modalTitle = document.getElementById('modal-title'); 
+        const modalDetails = document.getElementById('modal-details'); 
+
+        // Almacena los encabezados completos para usar en el modal de Afiliación
+        let currentFullHeaders = []; 
+        
+        let lastActiveSheet = 'tabla_consulta'; // Para recordar qué vista estaba activa
+
+        // --- FUNCIONES DEL MODAL ---
+
+        /**
+         * Muestra el modal con el contenido apropiado (texto de consulta).
+         * @param {HTMLElement} rowElement La fila (tr) que fue clickeada.
+         */
+        window.showModal = function(rowElement) {
+            
+            // Solo se permite el modal para 'tabla_consulta'
+            if (lastActiveSheet !== 'tabla_consulta') { 
+                return; 
+            }
+
+            modalDetails.innerHTML = ''; // Limpiar contenido previo
+
+            if (lastActiveSheet === 'tabla_consulta') {
+                // --- LÓGICA PARA TABLA CONSULTA (Texto único) ---
+                const encodedConsulta = rowElement.getAttribute('data-consulta');
+                
+                if (encodedConsulta) {
+                    const consultaValue = decodeURIComponent(encodedConsulta);
+
+                    modalTitle.textContent = 'Consulta Completa';
+                    // Renderiza el contenido como un bloque de texto
+                    modalDetails.innerHTML = `
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-xs font-semibold uppercase text-gray-500 mb-2">CONSULTA:</p>
+                            <p class="text-base whitespace-pre-wrap text-gray-800">${consultaValue}</p>
+                        </div>
+                    `;
+                    
+                    dataModalOverlay.style.display = 'flex';
+                } else {
+                    console.error("Error: No se encontró el atributo 'data-consulta' en la fila. El modal no puede cargar el contenido.");
+                }
+
+            } 
+        }
+
+        /**
+         * Cierra el modal.
+         */
+        window.closeModal = function() {
+            dataModalOverlay.style.display = 'none';
+        }
+
+        // Permitir cerrar el modal haciendo click fuera de su contenido
+        dataModalOverlay.addEventListener('click', (e) => {
+            if (e.target === dataModalOverlay) {
+                closeModal();
+            }
+        });
+
+        // --- FUNCIONES ESPECÍFICAS (REDIRECCIONES) ---
+
+        /**
+         * Redirige a Gestor Afiliaciones en la misma ventana 
+         */
+        function openGestorAfiliaciones() {
+            window.location.href = 'gestor_afiliaciones.html';
+        }
+        
+        /**
+         * Redirige a Gestor Novedades en la misma ventana.
+         */
+        function openGestorNovedades() {
+            window.location.href = 'gestor_novedades.html';
+        }
+        
+        /**
+         * Redirige a Gestor Convenios en la misma ventana.
+         */
+        function openGestorConvenios() {
+            window.location.href = 'gestor_convenios.html';
+        }
+        
+        /**
+         * Redirige a Gestor de Usuarios en la misma ventana.
+         */
+        function openGestorUsuarios() {
+            window.location.href = 'gestor_usuarios.html';
+        }
+
+        /**
+         * Función para cerrar la sesión (eliminar la bandera) y redirigir al login.
+         */
+        window.logout = function() {
+            localStorage.removeItem('isAuthenticatedSTM');
+            // 🇦🇷 ¡MODIFICADO! Eliminar el nombre de usuario guardado y el tipo de usuario
+            localStorage.removeItem('stm_username'); 
+            localStorage.removeItem('stm_user_type'); // <-- Agregado para limpiar el permiso
+            window.location.href = 'index.html';
+        }
+
+        // --- FUNCIONES GVIZ (Tablas de Consulta) ---
+
+        /**
+         * Crea la URL de Google Visualization con orden descendente por fecha (columna A).
+         */
+        function createGvizUrl(gid, sheetName) {
+            let baseUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;
+            
+            let selectQuery = '';
+            
+            if (sheetName === 'tabla_consulta') {
+                // La columna A (Timestamp) DEBE estar en la consulta SELECT si se usa en ORDER BY
+                selectQuery = 'select A, B, C, D, E, F order by A desc'; 
+            }
+
+            if (selectQuery) {
+                baseUrl += `&tq=${encodeURIComponent(selectQuery)}`;
+            }
+            
+            return baseUrl;
+        }
+
+        /**
+         * Parsea los datos JSON de Google Visualization.
+         */
+        function parseGvizData(jsonText, sheetName) {
+            try {
+                const jsonString = jsonText.substring(jsonText.indexOf('(') + 1, jsonText.lastIndexOf(')'));
+                const json = JSON.parse(jsonString);
+                const table = json.table;
+                
+                if (!table || !table.rows || table.rows.length === 0) {
+                    return { headers: [], data: [], originalData: [], fullHeaders: [] };
+                }
+                
+                // Mapeo de nombres de columna para las vistas
+                let headersMap = {}; 
+                
+                if (sheetName === 'tabla_consulta') {
+                    // Mapeo para Tabla Consulta. (A, B, C, D, E, F)
+                    headersMap = {
+                        'A': 'TIMESTAMP', 
+                        'B': 'APELLIDO', 
+                        'C': 'NOMBRE', 
+                        'D': 'TEL/CELULAR DE CONTACTO', 
+                        'E': 'EMAIL', 
+                        'F': 'CONSULTA', 
+                    };
+                }
+
+                // Generar encabezados usando el mapeo (usa TODAS las columnas pedidas)
+                let fullHeaders = table.cols.map(col => {
+                    return headersMap[col.id] || col.label || col.id;
+                });
+
+                // Generar data original (todas las columnas pedidas: A-F para consulta)
+                const originalData = table.rows.map(row => {
+                    return row.c.map(cell => {
+                        return cell ? (cell.f || (cell.v !== undefined ? cell.v : '')) : '';
+                    });
+                });
+                
+                // --- Aplicar el filtro de visibilidad ---
+                let headers;
+                let finalData;
+
+                if (sheetName === 'tabla_consulta') {
+                    // Lógica para tabla_consulta (ocultar la columna 'TIMESTAMP' (A) y 'CONSULTA' (F))
+                    
+                    // 1. Quitar los encabezados no visibles ('TIMESTAMP' y 'CONSULTA')
+                    const consultaIndex = fullHeaders.findIndex(h => h === 'CONSULTA');
+                    if (consultaIndex !== -1) {
+                        fullHeaders.splice(consultaIndex, 1); // Quitar CONSULTA (F)
+                    }
+                    const timestampIndex = fullHeaders.findIndex(h => h === 'TIMESTAMP');
+                    if (timestampIndex !== -1) {
+                         fullHeaders.splice(timestampIndex, 1); // Quitar TIMESTAMP (A)
+                    }
+
+                    headers = fullHeaders; // B, C, D, E (Headers visibles)
+
+                    // 2. Quitar la columna 'TIMESTAMP' y 'CONSULTA' de los datos que se van a renderizar (quedan B, C, D, E)
+                    finalData = originalData.map(row => {
+                         // originalRow tiene 6 columnas (A, B, C, D, E, F)
+                         // Quitamos A (índice 0) y F (índice 5), quedando B, C, D, E (índices 1, 2, 3, 4)
+                        return row.slice(1, 5); 
+                    });
+
+                } else {
+                    // Otros casos 
+                    headers = fullHeaders;
+                    finalData = originalData;
+                }
+                
+                currentFullHeaders = fullHeaders;
+
+                return { 
+                    headers: headers, // Encabezados visibles
+                    data: finalData, // Data visible
+                    originalData: originalData, // Data completa (incluye A y F para Consulta)
+                    fullHeaders: currentFullHeaders // Todos los encabezados de datos
+                };
+
+            } catch (error) {
+                console.error("Error al parsear el JSON de Google Sheets (GViz):", error);
+                return { headers: [], data: [], originalData: [], fullHeaders: [] };
+            }
+        }
+
+        /**
+         * Renderiza la tabla con las columnas visibles, agregando data-attributes con el contenido completo.
+         */
+        function renderDataTable(headers, data, originalData, fullHeaders) {
+            if (data.length === 0) {
+                tableContainer.innerHTML = '<p class="text-center py-8 text-gray-500">No hay datos disponibles en esta hoja.</p>';
+                return;
+            }
+
+            const sheetName = lastActiveSheet;
+            
+            // Las filas de consulta son cliqueables.
+            const isClickable = sheetName === 'tabla_consulta'; 
+            const clickHandler = isClickable ? 'onclick="showModal(this)"' : '';
+            const rowCursor = isClickable ? 'cursor-pointer' : '';
+
+            let html = `
+                <div class="rounded-xl overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto max-h-[70vh]">
+                        <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
+                            <thead class="bg-indigo-600 text-white sticky top-0">
+                                <tr>
+                                    ${headers.map(header => `<th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">${header}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+            `;
+
+            // originalData siempre incluye la primera columna de la consulta GViz (A o B) en el índice 0.
+            originalData.forEach((originalRow, index) => {
+                const row = data[index]; // Solo las columnas visibles
+
+                // --- PREPARAR DATA PARA EL MODAL ---
+                let dataAttribute = '';
+
+                if (sheetName === 'tabla_consulta') {
+                    // originalRow tiene 6 columnas (A, B, C, D, E, F). F es el índice 5.
+                    const consultaContent = originalRow.length > 5 ? originalRow[5] : 'N/A';
+                    // Codificamos el contenido de la consulta
+                    dataAttribute = `data-consulta="${encodeURIComponent(consultaContent)}"`;
+                } 
+                
+                const rowClass = index % 2 === 0 ? 'bg-white hover:bg-indigo-50' : 'bg-gray-50 hover:bg-indigo-100';
+                
+                // Agregamos el handler de click y el atributo de data
+                html += `<tr class="${rowClass} ${rowCursor}" ${clickHandler} ${dataAttribute}>`;
+                html += row.map(cell => `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${cell}</td>`).join('');
+                html += `</tr>`;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            tableContainer.innerHTML = html;
+        }
+
+        async function loadSheetData(sheetName) {
+            const gid = sheetGids[sheetName];
+            if (!gid) return; 
+            
+            let displayTitle = '';
+            if (sheetName === 'tabla_consulta') {
+                displayTitle = 'Consultas realizadas';
+            } else {
+                // Título por defecto si hay otro caso
+                displayTitle = sheetName.charAt(0).toUpperCase() + sheetName.slice(1).replace('_', ' '); 
+            }
+            
+            currentSheetTitle.textContent = displayTitle;
+            
+            dataLoadingMessage.style.display = 'block';
+            tableContainer.innerHTML = ''; 
+            
+            try {
+                const response = await fetch(createGvizUrl(gid, sheetName));
+                const text = await response.text();
+                // Parseamos los datos, obteniendo las cabeceras completas también
+                const { headers, data, originalData, fullHeaders } = parseGvizData(text, sheetName);
+                
+                // Pasamos la data visible y la data original a renderDataTable
+                renderDataTable(headers, data, originalData, fullHeaders);
+                
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                dataLoadingMessage.textContent = `Error al cargar los datos: ${error.message}`;
+            } finally {
+                dataLoadingMessage.style.display = 'none';
+            }
+        }
+
+        // --- 🇦🇷 LÓGICA DE PERMISOS ---
+        
+        /**
+         * Función para aplicar la restricción de botones si el usuario NO es ADMIN.
+         */
+        function applyUserPermissions() {
+            const userType = localStorage.getItem('stm_user_type');
+            // Regla: Es Admin si el tipo es 'ADMIN'. Usamos .toUpperCase() por seguridad.
+            const isAdmin = userType && String(userType).toUpperCase() === 'ADMIN'; 
+            const consultasBtn = document.querySelector('[data-sheet="tabla_consulta"]'); 
+
+            // Solo aplicar si NO es admin
+            if (!isAdmin) {
+                // Ocultar todos los botones EXCEPTO 'Consultas' (tabla_consulta)
+                buttons.forEach(btn => {
+                    const sheet = btn.getAttribute('data-sheet');
+                    if (sheet !== 'tabla_consulta') { 
+                        btn.classList.add('hidden');
+                    }
+                });
+                
+                // 🇦🇷 ¡CLAVE! Forzar el botón "Consultas" a la derecha, manteniendo el tamaño.
+                if (consultasBtn) {
+                    // AJUSTE DE COLUMNA: Ahora apunta a la columna 6 de la grilla grande (lg:grid-cols-6)
+                    consultasBtn.classList.add('col-start-2', 'sm:col-start-3', 'lg:col-start-6');
+                }
+                
+            } else {
+                 // Si es ADMIN, nos aseguramos de que el botón de consultas esté en su posición inicial (izquierda)
+                 if (consultasBtn) {
+                    consultasBtn.classList.remove('col-start-2', 'sm:col-start-3', 'lg:col-start-6');
+                }
+                // Si es ADMIN, todos los botones deben estar visibles
+                buttons.forEach(btn => {
+                    btn.classList.remove('hidden');
+                });
+            }
+        }
+
+
+        // --- NAVEGACIÓN Y CARGA INICIAL ---
+
+        /**
+         * Controla la visibilidad de la vista y la carga de datos.
+         */
+        function loadView(sheetName) {
+            
+            // 1. Manejo especial para el gestor de afiliaciones 
+            if (sheetName === 'gestor_afiliaciones_external') {
+                openGestorAfiliaciones();
+                return; 
+            }
+            
+            // 2. Manejo especial para el gestor de novedades 
+            if (sheetName === 'gestor_novedades_external') {
+                openGestorNovedades();
+                return; 
+            }
+
+            // 3. Manejo especial para el gestor de convenios 
+            if (sheetName === 'gestor_convenios_external') {
+                openGestorConvenios();
+                return; 
+            }
+
+            // 4. Redirección para CREDENCIAL_QR
+            if (sheetName === 'credencial_qr') {
+                window.location.href = 'credencial_qr.html'; 
+                return;
+            }
+            
+            // 5. NUEVA Redirección para GESTOR DE USUARIOS
+            if (sheetName === 'gestor_usuarios_external') {
+                openGestorUsuarios(); 
+                return;
+            }
+            
+            // 6. Cargar datos (solo si es una vista de tabla, como tabla_consulta)
+            const gid = sheetGids[sheetName];
+            if (gid) { 
+                 loadSheetData(sheetName);
+            }
+           
+            // 7. Actualizar el estado del último botón activo
+            lastActiveSheet = sheetName;
+
+            // 8. Actualizar botones activos (solo los de las vistas de tabla, que son solo 'tabla_consulta')
+            buttons.forEach(btn => {
+                const btnSheet = btn.getAttribute('data-sheet');
+                
+                // Desactiva el estilo 'active-indigo' y 'active-green' para todos
+                btn.classList.remove('active-indigo', 'active-green');
+
+                // Si es la vista de tabla 'tabla_consulta', la activa con el estilo índigo
+                if (btnSheet === 'tabla_consulta' && btnSheet === sheetName) {
+                    btn.classList.add('active-indigo');
+                }
+                // Si es el gestor de usuarios, lo activa con el estilo verde 
+                if (btnSheet === 'gestor_usuarios_external' && btnSheet === sheetName) {
+                     btn.classList.add('active-green');
+                }
+            });
+        }
+
+        // Asignar listeners a los botones de navegación
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                loadView(button.getAttribute('data-sheet'));
+            });
+        });
+
+        // Carga inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            // Aplicar los permisos (ocultar botones si no es admin)
+            applyUserPermissions(); 
+            
+            // Carga la vista de "Tabla Consulta" por defecto
+            loadView('tabla_consulta');
+        });
+
+    </script>
+</body>
+</html>

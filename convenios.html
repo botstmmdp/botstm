@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TÍTULO ACTUALIZADO -->
+    <title>Convenios STM</title>
+    <!-- Cargamos la tipografía ROBOTO -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Incluimos Tailwind CSS para un diseño moderno y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Usamos Font Awesome 6 para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* Configuraciones personalizadas de Tailwind (Paleta STM) */
+        :root {
+            --color-stm-purple: #5A377B; /* Púrpura principal */
+            --color-stm-teal: #34B3C5;   /* Turquesa (Acento Vibrante - Resalte) */
+            --color-bg-light: #f7f7f8;   /* Fondo muy claro */
+            --color-card-bg: #ffffff;    /* Fondo de tarjeta blanco puro */
+            
+            /* Colores Rubro (Ajustados a tonos más planos tipo Bootstrap) */
+            --color-rubro-primary: #0d6efd;
+            --color-rubro-success: #198754;
+            --color-rubro-warning: #ffc107;
+            --color-rubro-danger: #dc3545;
+            --color-rubro-info: #0dcaf0;
+            --color-rubro-secondary: #6c757d;
+        }
+
+        /* ************************************************* */
+        /* FIX DE SCROLL CRÍTICO & FUENTE ROBOTO */
+        /* ************************************************* */
+        html, body {
+            height: 100%; 
+            margin: 0;
+            padding: 0;
+            /* CRUCIAL: El body debe estar fijo, el scroll lo maneja el flip-face */
+            overflow: hidden; 
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif; /* APLICAMOS ROBOTO */
+            background-color: var(--color-bg-light);
+        }
+        
+        .app-container {
+            max-width: 480px; 
+            margin: 0 auto;
+            height: 100%; 
+            background-color: var(--color-card-bg); 
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1); 
+            display: flex;
+            flex-direction: column; /* Contenedor principal en columna */
+        }
+        
+        .content-area {
+            flex: 1; /* Ocupa todo el espacio entre header y footer */
+            position: relative;
+            /* El overflow-y: auto lo manejamos en .flip-face */
+            background-color: var(--color-card-bg);
+        }
+
+        /* ==================================== */
+        /* CSS para el Efecto FLIP 3D */
+        /* ==================================== */
+        .flip-container {
+            width: 100%;
+            height: 100%; 
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        
+        .flip-container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; 
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* AHORA EL SCROLL SE GESTIONA AQUÍ */
+            -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en iOS */
+        }
+        
+        /* AJUSTE CLAVE PARA LA CARA FRONTAL (BOTONERA) */
+        .front-face {
+            padding-top: 1rem; 
+        }
+
+        .back-face {
+            transform: rotateY(180deg);
+            padding: 1rem; 
+        }
+
+        /* AJUSTE CLAVE: Eliminamos el padding extra ya que la idea es que entre todo */
+        #rubroGrid {
+            padding-bottom: 1rem; 
+        }
+
+        /* ==================================== */
+        /* ESTILOS DE BOTONERA (RUBRO TILE) - REDUCIDOS */
+        /* ==================================== */
+        
+        .rubro-tile {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            border-radius: 0.75rem; /* Menos redondeado para ahorrar espacio */
+            background-color: var(--color-card-bg);
+            padding: 0.75rem 0.25rem; /* REDUCIDO */
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05); 
+            border: 1px solid rgba(229, 231, 235, 0.5); 
+        }
+        
+        .rubro-tile:hover {
+            transform: translateY(-1px); /* Pequeño levantamiento */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .rubro-tile.active {
+            border-color: var(--color-stm-purple);
+            background-color: #fcfaff; 
+            transform: scale(1.0); 
+            box-shadow: 0 0 0 3px rgba(90, 55, 123, 0.2); /* Sombra de acento más delgada */
+        }
+        
+        /* Contenedor del icono/imagen - REDUCIDO */
+        .rubro-icon-bg {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 3rem; /* REDUCIDO de 4rem a 3rem */
+            height: 3rem; /* REDUCIDO de 4rem a 3rem */
+            border-radius: 50%;
+            font-size: 1.5rem; /* REDUCIDO el icono interno */
+            margin-bottom: 0.5rem; /* REDUCIDO */
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #f0f0f0; 
+            color: #333;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06); 
+            transition: all 0.3s ease;
+        }
+        
+        .rubro-tile:hover .rubro-icon-bg {
+             transform: scale(1.03) rotate(-3deg);
+        }
+
+        /* Texto del Rubro - REDUCIDO */
+        .rubro-tile p {
+             font-size: 0.65rem; /* REDUCIDO de 0.7rem a 0.65rem */
+        }
+        
+        /* ==================================== */
+        /* Estilos generales (Mantenidos) */
+        /* ==================================== */
+
+        .stm-logo-header {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+        
+        .convenio-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); 
+            border-radius: 0.75rem; 
+            overflow: hidden;
+            background-color: var(--color-card-bg);
+        }
+        
+        .convenio-card:hover, .convenio-card.open {
+            border-color: var(--color-stm-teal); 
+            box-shadow: 0 4px 8px rgba(52, 179, 197, 0.2); 
+            transform: none; 
+        }
+        
+        .rubro-tag {
+            transition: all 0.2s ease;
+            background-color: var(--color-stm-purple); 
+            box-shadow: none; 
+            font-weight: 500; 
+        }
+
+        .convenio-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            padding: 0 1.25rem;
+            background-color: #fcfcfc; 
+        }
+        
+        .convenio-card.open .convenio-content {
+            max-height: 1000px; 
+            padding: 1rem 1.25rem 1.5rem; 
+        }
+
+        .chevron {
+            transition: transform 0.4s ease-out; 
+            color: var(--color-stm-purple); 
+            font-size: 1rem;
+        }
+        .convenio-card.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .filter-container {
+            padding: 0 1rem 1rem 1rem;
+        }
+
+        .header-title {
+            font-weight: 700; 
+            letter-spacing: -0.02em; 
+        }
+        
+        .detalle-content {
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+        }
+
+        /* ************************************************* */
+        /* ESTILOS ESPECÍFICOS DEL BOTÓN DE CONSULTA */
+        /* ************************************************* */
+        .consulta-icon-bg {
+            /* Usamos los mismos colores que la tarjeta de 'Automotor' que subiste */
+            background-color: #e5f6fa; /* Fondo muy claro, similar al turquesa pastel */
+            color: var(--color-stm-teal); /* Color del icono: el turquesa principal */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.25rem;
+            box-shadow: 0 0 0 5px rgba(52, 179, 197, 0.1); /* Sombra suave para el anillo exterior */
+        }
+        .consulta-text {
+            font-size: 0.75rem; /* Pequeño para que quepa bien */
+            font-weight: 500;
+            color: white; /* Color blanco en la cabecera morada */
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Principal que simula la pantalla de un móvil -->
+    <div class="app-container">
+        
+        <!-- HEADER / Barra de Navegación (ESTÁTICO) -->
+        <header class="p-5 bg-[var(--color-stm-purple)] text-white shadow-xl flex-shrink-0">
+            <!-- Contenedor FLEX principal para Título/Logo a la izquierda y Acciones a la derecha -->
+            <div class="flex items-start justify-between">
+                
+                <!-- Lado Izquierdo: LOGO y TÍTULO -->
+                <div class="flex items-center">
+                    <!-- LOGO STM (Imagen subida por el usuario) -->
+                    <img src="logo_STM.png" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/36x36/5A377B/FFFFFF?text=STM';"
+                         alt="Logo STM" 
+                         class="stm-logo-header mr-3">
+                         
+                    <!-- TÍTULO y SUBTÍTULO (en una columna) -->
+                    <div>
+                        <h1 class="header-title text-2xl tracking-tight">
+                            CONVENIOS STM
+                        </h1>
+                        <p class="text-indigo-200 text-sm font-light leading-none">
+                            Convenios exclusivos para vos.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Lado Derecho: BOTÓN DE ACCIÓN (Consulta) -->
+                <!-- BOTÓN DE CONSULTA SOLICITADO -->
+                <a href="consulta.html" class="flex flex-col items-center text-center -mt-2">
+                    <div class="consulta-icon-bg">
+                        <!-- Icono de información 'i' dentro del círculo -->
+                        <i class="fas fa-info text-2xl"></i>
+                    </div>
+                    <span class="consulta-text mt-1">Consulta</span>
+                </a>
+            </div>
+            
+        </header>
+
+        <!-- AREA DE CONTENIDO (ESTE CONTENEDOR ES EL QUE GIRA Y SCROLLEA) -->
+        <div class="content-area">
+            <div id="flipContainer" class="flip-container">
+                
+                <!-- CARA FRONTAL: GRID DE RUBROS -->
+                <div id="frontFace" class="flip-face front-face">
+                    <div class="filter-container">
+                        <!-- Título: Explorar Rubros (Icono cambiado: a fa-tags) -->
+                        <h2 class="text-lg font-bold text-gray-800 pt-1 mb-3 px-1">
+                            <i class="fas fa-tags text-[var(--color-stm-teal)] mr-2"></i> Selecciona el rubro y el convenio que buscas
+                        </h2>
+    
+                        <!-- Grid para mostrar los rubros como tarjetas (CAMBIO: grid-cols-4) -->
+                        <div id="rubroGrid" class="grid grid-cols-4 gap-2 mb-6">
+                            <div class="col-span-4 text-center p-4 text-gray-500" id="rubroGridLoading">Cargando rubros...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CARA TRASERA: LISTA DE CONVENIOS -->
+                <div id="backFace" class="flip-face back-face">
+                    
+                    <!-- Botón para volver a la lista de Rubros (Back Button) -->
+                    <button id="backToRubros" 
+                            class="mb-4 flex items-center text-sm font-medium text-white bg-[var(--color-stm-teal)] hover:bg-[#2092a4] active:bg-[#1a7080] transition duration-150 py-2 px-4 rounded-full shadow-md self-start">
+                        <i class="fas fa-chevron-left mr-2"></i> Volver a Rubros
+                    </button>
+                    
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 px-1" id="conveniosTitle">
+                        Convenios Destacados:
+                    </h2>
+        
+                    <div id="conveniosList" class="space-y-4 pb-12 flex-grow">
+                        <!-- Spinner de carga inicial -->
+                        <div id="loadingSpinner" class="text-center p-12 bg-gray-100 rounded-lg shadow-inner">
+                            <i class="fas fa-spinner fa-spin text-5xl text-[var(--color-stm-teal)]"></i>
+                            <p class="mt-4 text-gray-700 font-medium text-lg">Cargando beneficios...</p>
+                        </div>
+                        
+                        <!-- Aquí se cargarán dinámicamente los convenios -->
+                    </div>
+        
+                    <!-- Mensaje de no resultados (oculto por defecto) -->
+                    <div id="noResults" class="hidden text-center p-10 bg-gray-100 rounded-lg shadow-md border border-gray-300 mt-6 flex-shrink-0">
+                        <i class="fas fa-search-minus text-4xl text-gray-500"></i>
+                        <p class="mt-4 text-gray-700 font-bold">¡Uy! No hay convenios en este rubro.</p>
+                        <p class="text-sm text-gray-600">Probá seleccionando "TODOS" en los rubros de arriba.</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER (ESTÁTICO) - TEXTO Y AÑO ACTUALIZADOS -->
+        <footer class="p-4 text-center text-xs text-gray-500 border-t mt-auto bg-gray-50 flex-shrink-0">
+            <p>&copy; 2025 STM Sindicato de Trabajadores Municipales</p>
+        </footer>
+    </div>
+
+    <script>
+        // La URL de tu AppScript que devuelve los datos de los convenios
+        const APPSSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgD9-ggtZjFyK7I4FfwLETVtj5TUBvQIZWF5om5yAKLhj4BuerpbdHN-3PnTfLDzdxBA/exec'; 
+
+        const flipContainer = document.getElementById('flipContainer');
+        const conveniosList = document.getElementById('conveniosList');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const rubroGrid = document.getElementById('rubroGrid');
+        const rubroGridLoading = document.getElementById('rubroGridLoading');
+        const noResults = document.getElementById('noResults');
+        const conveniosTitle = document.getElementById('conveniosTitle');
+        const backButton = document.getElementById('backToRubros');
+        
+        let allConvenios = []; 
+        let uniqueRubros = new Set();
+        let currentFilter = 'TODOS'; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchConvenios();
+            
+            backButton.addEventListener('click', () => {
+                flipTo('front');
+            });
+        });
+        
+        /**
+         * Simula un simple fetch con reintento y backoff exponencial (para manejar posibles fallos de red)
+         */
+        async function fetchWithRetry(url, options = {}, maxRetries = 3, delay = 1000) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay * (2 ** i)));
+                }
+            }
+        }
+        
+        /**
+         * Controla el giro de la pantalla (front: rubros, back: convenios).
+         */
+        function flipTo(face) {
+            if (face === 'back') {
+                flipContainer.classList.add('flipped');
+            } else {
+                flipContainer.classList.remove('flipped');
+            }
+            // Asegurarse de que el scroll se resetee al cambiar de cara
+            const activeFace = face === 'front' ? document.getElementById('frontFace') : document.getElementById('backFace');
+            activeFace.scrollTop = 0;
+        }
+
+        /**
+         * Carga los convenios desde el AppScript.
+         */
+        async function fetchConvenios() {
+            loadingSpinner.classList.remove('hidden');
+            conveniosList.innerHTML = '';
+            noResults.classList.add('hidden');
+            rubroGridLoading.classList.remove('hidden');
+
+            try {
+                const response = await fetchWithRetry(APPSSCRIPT_URL + '?action=READ_ALL');
+                const responseText = await response.text();
+                
+                let data = {};
+                try {
+                    data = JSON.parse(responseText);
+                } catch(e) {
+                     throw new Error('Respuesta del servidor no es JSON válida o estructura inesperada.');
+                }
+                
+                const dataArray = data.convenios || data.novedades; 
+                
+                if (data.status === 'success' && Array.isArray(dataArray)) {
+                    // Filtra solo los activos, independientemente de mayúsculas/minúsculas
+                    allConvenios = dataArray.filter(c => (c.ACTIVO || '').toUpperCase().trim() === 'SI');
+                    
+                    // 1. Obtener y renderizar los rubros en la grilla (Front Face)
+                    populateRubroGrid(allConvenios);
+                    
+                    // 2. Renderizar todos los convenios por defecto (Back Face)
+                    filterConvenios(currentFilter, false); 
+
+                } else {
+                    throw new Error(data.message || 'Error: Formato de datos inesperado o status no es "success".');
+                }
+            } catch (error) {
+                console.error('Error al cargar convenios:', error);
+                
+                // Mostrar el error en la cara frontal si no se pudo cargar
+                document.getElementById('frontFace').innerHTML = `
+                    <div class="alert bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md m-4" role="alert">
+                        <h4 class="font-bold">¡Error de Conexión!</h4>
+                        <p>No se pudieron cargar los convenios. Detalle: ${error.message}</p>
+                    </div>
+                `;
+                rubroGridLoading.classList.add('hidden');
+            } finally {
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Rellena el grid de rubros únicos y añade la opción TODOS.
+         */
+        function populateRubroGrid(convenios) {
+            rubroGridLoading.classList.add('hidden');
+            rubroGrid.innerHTML = '';
+            uniqueRubros = new Set();
+
+            convenios.forEach(c => {
+                if (c.rubro) {
+                    // Cuidado: Al obtener el rubro de los datos, lo convertimos a mayúsculas
+                    uniqueRubros.add(c.rubro.toUpperCase().trim());
+                }
+            });
+            
+            let rubrosArray = Array.from(uniqueRubros).sort();
+
+            // Agregar la opción "TODOS" al principio
+            if (!rubrosArray.includes('TODOS')) {
+                rubrosArray.unshift('TODOS');
+            }
+
+            renderRubroGrid(rubrosArray);
+        }
+        
+        /**
+         * Devuelve un color de acento y un color de fondo pastel para el tile del rubro.
+         */
+        function getRubroColor(rubro) {
+            const r = rubro.toUpperCase().trim();
+            // Colores tipo Bootstrap para los iconos, con un fondo muy suave
+            switch (r) {
+                case 'TODOS': return { color: 'var(--color-stm-purple)', bg: '#f1f1f9' };
+                // Rubros Existentes
+                case 'GASTRONOMIA': case 'COMIDA': return { color: 'var(--color-rubro-secondary)', bg: '#f8f9fa' };
+                case 'SALUD': case 'MEDICINA': case 'BELLEZA': case 'ESTETICA': return { color: 'var(--color-rubro-danger)', bg: '#fef3f4' }; 
+                case 'EDUCACION': case 'FORMACION': return { color: 'var(--color-rubro-primary)', bg: '#f0f6ff' };
+                case 'TURISMO': case 'VIAJES': case 'BALNEARIO': return { color: 'var(--color-rubro-success)', bg: '#f0fff4' }; 
+                case 'COMERCIO': case 'COMPRAS': case 'TIENDA': return { color: 'var(--color-rubro-warning)', bg: '#fffaf0' };
+                case 'DEPORTES': case 'GIMNASIOS': case 'FITNESS': return { color: 'var(--color-stm-teal)', bg: '#f0fbff' }; 
+                case 'SERVICIOS': return { color: 'var(--color-rubro-primary)', bg: '#f0f6ff' }; 
+                case 'FINANZAS': return { color: 'var(--color-rubro-success)', bg: '#f0fff4' };
+                case 'LEGAL': return { color: 'var(--color-rubro-secondary)', bg: '#f8f9fa' };
+                case 'HOGAR': return { color: 'var(--color-rubro-primary)', bg: '#f0f6ff' }; 
+                case 'ACCESORIOS': return { color: 'var(--color-rubro-warning)', bg: '#fffaf0' }; 
+                
+                // Nuevos Rubros
+                case 'AUTOMOTOR': return { color: 'var(--color-rubro-danger)', bg: '#fef3f4' }; // Rojo/Gris oscuro para vehículos
+                case 'BENEFICIOS': return { color: 'var(--color-stm-purple)', bg: '#fcfaff' }; // Púrpura de acento STM
+                case 'INDUMENTARIA': return { color: 'var(--color-rubro-info)', bg: '#f0fbff' }; // Azul claro/Info para ropa
+                case 'RECREACION': return { color: 'var(--color-rubro-success)', bg: '#f0fff4' }; // Verde/éxito para ocio
+                case 'VETERINARIA': return { color: 'var(--color-rubro-warning)', bg: '#fffaf0' }; // Amarillo/Advertencia para salud animal
+                
+                default: return { color: 'var(--color-rubro-info)', bg: '#f0fbff' }; // INFO o DEFAULT (Azul claro)
+            }
+        }
+        
+        /**
+         * Devuelve el icono de Font Awesome 6 para el rubro, LÓGICOS y CLAROS.
+         * *ACTUALIZADO: Balneario/Turismo a Sombrilla (fa-umbrella-beach)*
+         * *ACTUALIZADO: Deportes/Fitness a Raqueta de Tenis (fa-tennis-ball)*
+         */
+        function getRubroIcon(rubro) {
+            // Convertimos a mayúsculas para las comparaciones
+            const r = rubro.toUpperCase(); 
+
+            // 1. Todos
+            if (r === 'TODOS') return '<i class="fas fa-layer-group"></i>';
+
+            // 2. Gastronomía
+            if (r.includes('GASTRONOMIA') || r.includes('COMIDA') || r.includes('RESTAURANTE') || r.includes('CAFÉ')) {
+                return '<i class="fas fa-utensils"></i>'; 
+            }
+            
+            // 3. Salud y Estética
+            if (r.includes('SALUD') || r.includes('MEDICINA') || r.includes('BELLEZA') || r.includes('ESTETICA') || r.includes('ODONTO')) {
+                return '<i class="fas fa-stethoscope"></i>'; 
+            }
+            
+            // 4. Educación
+            if (r.includes('EDUCACION') || r.includes('FORMACION') || r.includes('CURSO') || r.includes('ESCUELA')) {
+                return '<i class="fas fa-graduation-cap"></i>'; 
+            }
+            
+            // 5. Turismo y Balnearios 
+            if (r.includes('TURISMO') || r.includes('VIAJES') || r.includes('HOTEL') || r.includes('AGENCIA') || r.includes('BALNEARIO')) {
+                // CAMBIO SOLICITADO: Sombrilla de playa
+                return '<i class="fa-solid fa-umbrella-beach"></i>'; 
+            }
+            
+            // 6. Comercio y Tienda (QUITAMOS ROPA, que va a INDUMENTARIA)
+            if (r.includes('COMERCIO') || r.includes('COMPRAS') || r.includes('TIENDA') || r.includes('MERCADO')) {
+                return '<i class="fas fa-cart-shopping"></i>'; 
+            }
+            
+            // 7. Fitness/Deportes 
+            if (r.includes('DEPORTES') || r.includes('GIMNASIO') || r.includes('FITNESS') || r.includes('ENTRENAMIENTO')) {
+                // CAMBIO SOLICITADO: Raqueta de tenis (fa-tennis-ball)
+                return '<i class="fa-solid fa-tennis-ball"></i>'; 
+            }
+            
+            // 8. Servicios
+            if (r.includes('SERVICIO')) {
+                 return '<i class="fas fa-handshake"></i>'; 
+            }
+            
+            // 9. Finanzas
+            if (r.includes('FINANZA') || r.includes('BANCO')) {
+                return '<i class="fas fa-wallet"></i>'; 
+            }
+            
+            // 10. Legal
+            if (r.includes('LEGAL') || r.includes('ABOGADO') || r.includes('ASESORAMIENTO')) {
+                return '<i class="fas fa-scale-balanced"></i>'; 
+            }
+
+            // 11. Hogar
+            if (r.includes('HOGAR') || r.includes('MUEBLES') || r.includes('DECORACION')) {
+                return '<i class="fas fa-house"></i>'; 
+            }
+            
+            // 12. Accesorios / Tecnología
+            if (r.includes('ACCESORIOS') || r.includes('TECNOLOGIA') || r.includes('CELULAR')) {
+                return '<i class="fas fa-mobile-screen-button"></i>'; 
+            }
+
+            // ******************************************************
+            // ************ NUEVOS RUBROS SOLICITADOS ***************
+            // ******************************************************
+            
+            // 13. Automotor (Coche)
+            if (r.includes('AUTOMOTOR') || r.includes('VEHICULO') || r.includes('AUTO') || r.includes('MECANICA') || r.includes('GARAGE')) {
+                return '<i class="fas fa-car"></i>';
+            }
+            
+            // 14. Beneficios (Regalo/Premio)
+            if (r.includes('BENEFICIO') || r.includes('REGALO') || r.includes('VENTAJA')) {
+                return '<i class="fas fa-gift"></i>';
+            }
+            
+            // 15. Indumentaria / Ropa (Camisa/Vestimenta)
+            if (r.includes('INDUMENTARIA') || r.includes('ROPA') || r.includes('MODA') || r.includes('ZAPATERIA')) {
+                return '<i class="fas fa-shirt"></i>';
+            }
+            
+            // 16. Recreación / Ocio (Máscaras de teatro/Entretenimiento)
+            if (r.includes('RECREACION') || r.includes('OCIO') || r.includes('ENTRETENIMIENTO') || r.includes('CINE') || r.includes('TEATRO')) {
+                return '<i class="fas fa-masks-theater"></i>'; 
+            }
+            
+            // 17. Veterinaria / Mascotas (Huella de Pata)
+            if (r.includes('VETERINARIA') || r.includes('MASCOTAS') || r.includes('ANIMALES')) {
+                return '<i class="fas fa-paw"></i>';
+            }
+
+            // Icono de Fallback (Información/Otro)
+            return '<i class="fas fa-circle-info"></i>'; 
+        }
+
+        /**
+         * Renderiza la grilla de tarjetas de rubros.
+         */
+        function renderRubroGrid(rubros) {
+            rubroGridLoading.classList.add('hidden');
+            rubroGrid.innerHTML = '';
+            
+            rubros.forEach(rubro => {
+                // El rubroName es el texto real que viene de los datos, p.ej. "Salud y Belleza"
+                const rubroName = rubro;
+                // getRubroIcon ahora es más inteligente con los nombres compuestos
+                const rubroIconHTML = getRubroIcon(rubro); 
+                const rubroStyle = getRubroColor(rubro);
+
+                const card = document.createElement('div');
+                card.className = 'col-span-1';
+                card.innerHTML = `
+                    <div class="rubro-tile ${rubro === currentFilter ? 'active' : ''} active:scale-[0.99] transition-transform" data-rubro="${rubro}">
+                        <!-- Círculo de Icono sólido -->
+                        <div class="rubro-icon-bg" 
+                             style="background-color: ${rubroStyle.bg}; color: ${rubroStyle.color};">
+                            ${rubroIconHTML}
+                        </div>
+                        <!-- Texto del rubro ahora usa el color del rubroStyle -->
+                        <p class="text-[0.65rem] font-medium uppercase leading-tight mt-1 px-0.5 text-gray-700">
+                           ${rubroName}
+                        </p>
+                    </div>
+                `;
+                
+                // Asigna la función de filtro al hacer click
+                card.querySelector('.rubro-tile').onclick = function() {
+                    currentFilter = rubro;
+                    filterConvenios(rubro, true);
+                    // Actualiza la clase activa y los estilos de borde
+                    document.querySelectorAll('.rubro-tile').forEach(tile => tile.classList.remove('active'));
+                    this.classList.add('active');
+                };
+                
+                rubroGrid.appendChild(card);
+            });
+        }
+        
+        /**
+         * Filtra los convenios basados en la selección del rubro y actualiza la vista.
+         */
+        function filterConvenios(selectedRubro, shouldFlip = false) {
+            currentFilter = selectedRubro;
+            let filteredConvenios = [];
+
+            if (selectedRubro === 'TODOS') {
+                filteredConvenios = allConvenios;
+                conveniosTitle.textContent = "Convenios Destacados:";
+            } else {
+                filteredConvenios = allConvenios.filter(c => 
+                    (c.rubro || '').toUpperCase().trim() === selectedRubro
+                );
+                conveniosTitle.textContent = `Convenios en: ${selectedRubro}`;
+            }
+
+            renderConvenios(filteredConvenios);
+            
+            if (shouldFlip) {
+                flipTo('back');
+            }
+        }
+
+        /**
+         * Renderiza la lista de convenios en formato de acordeón.
+         */
+        function renderConvenios(convenios) {
+            conveniosList.innerHTML = '';
+            
+            document.querySelectorAll('.convenio-card.open').forEach(openCard => {
+                openCard.classList.remove('open');
+            });
+            
+            if (convenios.length === 0) {
+                noResults.classList.remove('hidden');
+                conveniosList.classList.add('hidden'); 
+                return;
+            }
+            noResults.classList.add('hidden');
+            conveniosList.classList.remove('hidden');
+
+            convenios.forEach(convenio => {
+                const rubro = (convenio.rubro || 'SIN RUBRO').toUpperCase().trim();
+                const titulo = convenio.titulo || 'Convenio sin Título';
+                
+                // IMPORTANTE: Mantenemos el detalle TAL CUAL, sin reemplazar saltos de línea
+                const detalle = convenio.detalle || 'Detalle no especificado.'; 
+                
+                // Usamos la función de icono mejorada
+                const rubroIconHTML = getRubroIcon(rubro); 
+                const rubroColor = getRubroColor(rubro).color; // Color de acento
+
+                const card = document.createElement('div');
+                card.className = 'convenio-card'; 
+
+                card.onclick = function() {
+                    toggleConvenio(this);
+                };
+
+                card.innerHTML = `
+                    <div class="p-4 flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition duration-150">
+                        <!-- Lado Izquierdo: Rubro y Título -->
+                        <div class="flex-1 min-w-0 pr-4">
+                            <!-- Tag Púrpura principal, incluye barra vertical | para separar ícono y texto -->
+                            <span class="rubro-tag inline-flex items-center px-2 py-0.5 text-xs font-medium uppercase tracking-wider rounded-md text-white mb-1">
+                                <span class="mr-1 text-sm">${rubroIconHTML}</span> | ${rubro} 
+                            </span>
+                            <!-- Título con fuente Roboto y más simple -->
+                            <h2 class="text-xl font-bold text-gray-900">${titulo}</h2>
+                        </div>
+                        
+                        <!-- Lado Derecho: Icono de Despliegue Púrpura -->
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chevron-down chevron text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido Desplegable (Detalle) -->
+                    <div class="convenio-content">
+                        <div class="text-base text-gray-700 leading-relaxed">
+                            <!-- Detalle del beneficio con color de acento del rubro -->
+                            <h3 class="font-bold mb-3 border-b border-gray-200 pb-1 text-lg" style="color: ${rubroColor};">Detalles y Beneficios:</h3>
+                            <!-- Usamos la clase detalle-content para mantener el formato original (pre-wrap) -->
+                            <p class="text-sm detalle-content">${detalle}</p> 
+                        </div>
+                    </div>
+                `;
+                conveniosList.appendChild(card);
+            });
+        }
+        
+        /**
+         * Abre o cierra la tarjeta de convenio y cierra las otras abiertas.
+         */
+        function toggleConvenio(card) {
+            const isOpen = card.classList.contains('open');
+
+            // 1. Cerrar todas las otras tarjetas abiertas
+            document.querySelectorAll('.convenio-card.open').forEach(openCard => {
+                if (openCard !== card) {
+                    openCard.classList.remove('open');
+                }
+            });
+
+            // 2. Abrir/Cerrar la tarjeta actual
+            if (!isOpen) {
+                card.classList.add('open');
+            } else {
+                card.classList.remove('open');
+            }
+        }
+    </script>
+</body>
+</html>

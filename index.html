@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión - STM</title>
+    <link rel="icon" type="image/png" href="logo_STM.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff; /* Fondo totalmente blanco */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem; /* Padding general para que no toque los bordes en móvil */
+            box-sizing: border-box; /* Asegura que el padding no añada ancho extra */
+        }
+
+        /* Contenedor principal: Ajuste para pantallas pequeñas */
+        .w-full {
+            width: 100%;
+        }
+        .max-w-md {
+            max-width: 28rem; /* El max-width de Tailwind (448px) */
+        }
+
+        /* NUEVOS ESTILOS PARA EL LOGO */
+        .logo-container {
+            width: 4rem; 
+            height: 4rem; 
+            overflow: hidden;
+            border-radius: 9999px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); 
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+
+        /* Estilo para el botón */
+        .btn-primary {
+            transition: all 0.2s ease-in-out;
+            background-color: #4f46e5;
+            box-shadow: 0 4px 15px -3px rgba(79, 70, 229, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px -5px rgba(79, 70, 229, 0.6);
+        }
+        .input-text:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            outline: none;
+        }
+
+        /* Ajuste específico para móvil si el contenido se desborda */
+        @media (max-width: 640px) {
+            /* Aseguramos que el contenedor del formulario use el 95% del ancho en móviles */
+            .w-full {
+                width: 95%;
+            }
+            /* Reducimos el padding de la caja principal en móviles */
+            .p-8 {
+                padding: 1.5rem; /* Menos agresivo que 8 */
+            }
+            /* Ajuste para el modal en móvil */
+            .max-w-sm {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-2xl border-t-4 border-indigo-600">
+        
+        <header class="mb-8 flex flex-col items-center">
+            <div class="logo-container mb-4">
+                <img src="logo_STM.png" alt="Logo Sindicato de Trabajadores Municipales" onerror="this.onerror=null; this.src='https://placehold.co/100x100/4f46e5/ffffff?text=STM'">
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 text-center">
+                Acceso al <span class="text-indigo-600">Tablero de Mando</span>
+            </h1>
+            <p class="text-gray-500 mt-1 text-center">
+                Ingresá tus credenciales para continuar.
+            </p>
+        </header>
+
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    required 
+                    placeholder="Usuario"
+                    class="input-text w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-indigo-500"
+                >
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Ingresá tu clave"
+                    class="input-text w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-indigo-500"
+                >
+            </div>
+
+
+            <p id="error-message" class="text-red-600 text-sm hidden">
+                Usuario o Contraseña incorrectos. Por favor, verificá tus datos.
+            </p>
+
+            <button 
+                type="submit" 
+                class="btn-primary w-full text-white py-2.5 px-4 rounded-lg text-lg font-semibold tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <p id="loading-message" class="text-center text-indigo-600 font-medium mt-4 hidden">
+            Verificando credenciales...
+        </p>
+
+    </div>
+    
+    <div id="welcome-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center transition-opacity duration-300 z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+            <div class="text-center">
+                <svg class="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="mt-4 text-2xl font-bold text-gray-900" id="modal-greeting">¡Bienvenido!</h3>
+                <p class="mt-2 text-md text-gray-500">
+                    Acceso concedido para:
+                </p>
+                <p class="mt-1 text-xl font-extrabold text-indigo-600" id="user-fullname">
+                    [Nombre Completo del Usuario]
+                </p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button type="button" id="modal-continue-btn" class="btn-primary w-full text-white py-2.5 px-4 rounded-lg text-lg font-semibold tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Continuar al Tablero
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // --- CONFIGURACIÓN Y CONSTANTES ---
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybImPtLd8JSSJk-grUagTAfxBUVG8wsPp2zcedCmazDtqtycAjSP5x1jECfPKEmQ4FJg/exec'; 
+        const SHEET_ID = '1OZnWCvh9NpBaoZndAV1IPPqtNWgQnv8GMh6J2-l3wZo'; 
+        const SHEET_NAME_FOR_VALIDATION = 'user'; 
+        const USERNAME_COLUMN_INDEX = 3; 
+        const PASSWORD_COLUMN_INDEX = 4; 
+        
+        // Elementos de UI
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username'); 
+        const passwordInput = document.getElementById('password'); 
+        const errorMessage = document.getElementById('error-message');
+        const loadingMessage = document.getElementById('loading-message');
+        
+        // NUEVOS ELEMENTOS DE UI PARA EL MODAL
+        const welcomeModal = document.getElementById('welcome-modal');
+        const modalContent = document.getElementById('modal-content');
+        const userFullnameDisplay = document.getElementById('user-fullname');
+        const modalContinueBtn = document.getElementById('modal-continue-btn');
+
+        /**
+         * Limpia el valor del Nombre de Usuario (CUIL/DNI) eliminando guiones, puntos y espacios.
+         * La contraseña se envía sin limpiar.
+         * @param {string} value El Nombre de Usuario (CUIL/DNI) ingresado.
+         * @returns {string} El valor limpio.
+         */
+        function cleanInput(value) {
+            return value.replace(/[-\s\.]/g, '').trim();
+        }
+
+        /**
+         * Muestra el modal de bienvenida con el nombre del usuario.
+         * @param {string} fullName El nombre completo del usuario.
+         */
+        function showWelcomeModal(fullName) {
+            userFullnameDisplay.textContent = fullName;
+            welcomeModal.classList.remove('hidden');
+            welcomeModal.classList.add('flex');
+            
+            // Animación de entrada
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+        
+        /**
+         * Redirige al dashboard.
+         */
+        function redirectToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        /**
+         * Maneja el envío del formulario de inicio de sesión, comunicándose con Apps Script.
+         * @param {Event} event El evento de envío del formulario.
+         */
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            // Ocultar mensaje de error anterior y mostrar cargando
+            errorMessage.classList.add('hidden');
+            loadingMessage.classList.remove('hidden');
+            usernameInput.disabled = true;
+            passwordInput.disabled = true;
+            loginForm.querySelector('button').disabled = true;
+
+            const rawUsername = usernameInput.value;
+            const rawPassword = passwordInput.value;
+
+            const cleanUsername = cleanInput(rawUsername);
+
+            if (!cleanUsername || !rawPassword) {
+                errorMessage.textContent = 'Por favor, ingresá tu Nombre de Usuario y Contraseña.';
+                errorMessage.classList.remove('hidden');
+                loadingMessage.classList.add('hidden');
+                usernameInput.disabled = false;
+                passwordInput.disabled = false;
+                loginForm.querySelector('button').disabled = false;
+                return;
+            }
+
+            try {
+                // Preparamos los datos a enviar al Apps Script
+                const dataToSend = {
+                    sheetId: SHEET_ID,
+                    sheetName: SHEET_NAME_FOR_VALIDATION,
+                    username: cleanUsername, 
+                    password: rawPassword, 
+                    usernameColumnIndex: USERNAME_COLUMN_INDEX, 
+                    passwordColumnIndex: PASSWORD_COLUMN_INDEX
+                };
+
+                // Función de reintento con backoff exponencial para Apps Script
+                const maxRetries = 3;
+                let attempt = 0;
+                let response = null;
+                
+                while (attempt < maxRetries) {
+                    try {
+                        response = await fetch(APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'cors', 
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded' 
+                            },
+                            // Convertimos el objeto dataToSend en formato URLSearchParams
+                            body: new URLSearchParams(dataToSend).toString()
+                        });
+
+                        if (response.ok) {
+                            break; 
+                        } else {
+                            // Si la respuesta no es OK pero no es un error de conexión (e.g., 404, 500)
+                            throw new Error(`Error en la solicitud al servidor: ${response.statusText}`);
+                        }
+                    } catch (error) {
+                        attempt++;
+                        if (attempt >= maxRetries) {
+                            throw error; 
+                        }
+                        // Espera exponencial: 1s, 2s, 4s
+                        const delay = Math.pow(2, attempt) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+
+                if (!response) {
+                     throw new Error('No se pudo obtener una respuesta del servidor.');
+                }
+                
+                const result = await response.json();
+
+                // 2. Verificar el resultado devuelto por Apps Script
+                if (result.success) {
+                    // ¡USUARIO AUTORIZADO!
+                    localStorage.setItem('isAuthenticatedSTM', 'true'); 
+                    
+                    // MOSTRAMOS EL MODAL CON EL NOMBRE Y APELLIDO 
+                    const fullName = result.fullName || 'Usuario Desconocido'; 
+                    
+                    // 🇦🇷 ¡NUEVO! Obtener el permiso devuelto por Apps Script
+                    const userType = result.user_type || 'USER'; // Si no viene, por defecto es USER
+                    
+                    // 🇦🇷 ¡CLAVE! Guardar el nombre de usuario Y EL TIPO de usuario en localStorage
+                    localStorage.setItem('stm_username', fullName); 
+                    localStorage.setItem('stm_user_type', userType); // <-- ¡ESTA ES LA LÍNEA CLAVE!
+
+                    showWelcomeModal(fullName);
+                    
+                    // NO redirigimos aquí. La redirección pasa en el botón del modal.
+                } else {
+                    // Usuario no existe o credenciales incorrectas
+                    errorMessage.textContent = 'Usuario o Contraseña incorrectos. Por favor, verificá tus datos.';
+                    errorMessage.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Error durante la verificación:', error);
+                errorMessage.textContent = `Error de conexión: ${error.message}. Asegurate de haber desplegado correctamente el Apps Script y de que la URL esté bien configurada.`;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                // Ocultar cargando y habilitar inputs/botón
+                // Solo re-habilitamos el formulario si el modal NO se mostró
+                if (!welcomeModal.classList.contains('flex')) {
+                    loadingMessage.classList.add('hidden');
+                    usernameInput.disabled = false;
+                    passwordInput.disabled = false;
+                    loginForm.querySelector('button').disabled = false;
+                } else {
+                    loadingMessage.classList.add('hidden'); // Ocultar solo el mensaje de carga
+                }
+            }
+        }
+
+        // Asignar el listener al formulario
+        loginForm.addEventListener('submit', handleLogin);
+        
+        // NUEVO: Asignar el listener al botón del modal
+        modalContinueBtn.addEventListener('click', redirectToDashboard);
+
+    </script>
+</body>
+</html>
