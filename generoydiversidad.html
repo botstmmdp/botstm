@@ -2,38 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- CLAVE: Asegura que el contenido se ajuste al ancho del dispositivo -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienestar y Apoyo Psicosocial - STM</title>
-    <!-- Fuente Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <!-- Iconos de Lucide -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <!-- Usamos Tailwind CSS para el styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Definición de colores institucionales */
         :root {
-            --stm-purple: #5A377B; /* Púrpura principal */
-            --stm-teal: #34B3C5;   /* Celeste secundario */
-            --stm-bg-light: #f8f9fa; /* Fondo claro */
+            --stm-purple: #5A377B;
+            --stm-teal: #34B3C5;
+            --stm-bg-light: #f8f9fa;
         }
         
-        /* Configuración global del cuerpo */
         body { 
             background-color: var(--stm-bg-light); 
             font-family: 'Roboto', sans-serif; 
             line-height: 1.6;
-            color: #34495e; /* Texto oscuro para buena legibilidad */
+            color: #34495e;
         }
 
-        /* Títulos principales */
         .h1-purple {
             color: var(--stm-purple);
             font-weight: 900;
         }
 
-        /* Estilo para los botones principales */
         .btn-purple {
             background-color: var(--stm-purple);
             border: 2px solid var(--stm-purple);
@@ -47,7 +39,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        /* Estilo para tarjetas de contenido (cards) */
         .content-card {
             background-color: #ffffff;
             border-radius: 12px;
@@ -61,7 +52,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        /* Estilo específico para los headers de sección */
         .section-header-teal {
             background-color: var(--stm-teal);
             color: #ffffff;
@@ -73,13 +63,12 @@
             align-items: center;
         }
 
-        /* ANIMACIÓN DE PARPADEO/PULSO ROJIZA PARA EMERGENCIA */
         @keyframes emergency-pulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); /* Rojo Vivo */
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
             }
             50% {
-                box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); /* Pulso más grande */
+                box-shadow: 0 0 0 15px rgba(255, 0, 0, 0);
             }
             100% {
                 box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); 
@@ -87,22 +76,18 @@
         }
 
         .btn-pulse {
-            animation: emergency-pulse 1.5s infinite; /* Animación rápida */
+            animation: emergency-pulse 1.5s infinite;
         }
     </style>
 </head>
 <body class="p-4 sm:p-8">
 
-    <!-- Contenedor Principal Centrado -->
     <div class="max-w-4xl mx-auto">
         
-        <!-- Encabezado/Título Principal -->
         <header class="text-center mb-10">
             <div class="logo-container mb-4">
-                <!-- Placeholder de Logo, podés reemplazar 'logo_STM.png' por tu logo real -->
                 <img src="logo_STM.png" alt="Logo de la Empresa" class="mx-auto rounded-lg shadow-md">
             </div>
-            <!-- Título que escala de 4xl a 5xl -->
             <h1 class="h1-purple text-4xl sm:text-5xl border-b-4 border-stm-teal pb-2 inline-block">
                 Secretaría de Género y Diversidad STM
             </h1>
@@ -111,7 +96,6 @@
             </p>
         </header>
 
-        <!-- Call to Action Final - Botones pulsantes de apoyo -->
         <div class="text-center mt-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-stm-purple">
             <h3 class="text-3xl font-extrabold text-gray-800 mb-4">
                 Formas de contacto
@@ -130,66 +114,48 @@
                         Servicio confidencial.
                     </p>
                 </div>
-            <!-- Botones que cambian de columna a fila en pantallas sm: y superiores -->
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
-                <!-- Botón Apoyo Psicoemocional (Pulsante) -->
-                <a href="#apoyo-psicosocial" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-red-700 hover:border-red-700">
+                <a href="#bienestar-integral" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-red-700 hover:border-red-700">
                     <i data-lucide="hand-heart" class="inline-block mr-2 w-5 h-5"></i>
                     Apoyo Psicoemocional
                 </a>
                 
-                <!-- Botón Bienestar Laboral (Pulsante) -->
-                <a href="#bienestar-laboral" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-teal-700 hover:border-teal-700">
+                <a href="#bienestar-integral" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-teal-700 hover:border-teal-700">
                     <i data-lucide="sun" class="inline-block mr-2 w-5 h-5"></i>
                     Guía de Bienestar Laboral
                 </a>
             </div>
 
-            <!-- Botón Contacto General -->
-            <p class="mt-8 text-lg border-t pt-4">
-                O si preferís hacer una consulta general:
-            </p>
-            <a href="#" class="inline-block btn-purple py-2 px-6 text-lg rounded-full font-bold shadow-md opacity-80 hover:opacity-100">
-                ¡Ir al Formulario de Contacto!
-            </a>
+
         </div>
 
-        <!-- 1. Sección de Bienestar Laboral (RESUMIDA - Párrafo único) -->
-        <section id="bienestar-laboral" class="mb-12">
+        <section id="bienestar-integral" class="mb-12">
             <div class="section-header-teal rounded-t-lg shadow-lg">
-                <i data-lucide="briefcase-business" class="mr-3 w-7 h-7"></i>
-                Bienestar Laboral: Prevención y Entorno Positivo
+                <i data-lucide="shield-check" class="mr-3 w-7 h-7"></i>
+                Bienestar Integral STM: Un Derecho Laboral Colectivo
             </div>
             <div class="content-card rounded-b-lg">
-                <!-- Párrafo ÚNICO de resumen del Bienestar Laboral -->
                 <p class="text-lg font-medium text-gray-700">
-                    La sección de **Bienestar Laboral** se enfoca en crear un ambiente positivo y productivo, priorizando la **conciliación** mediante flexibilidad horaria, teletrabajo y respeto por la desconexión digital. Promueve la **Salud Física** con guías de ergonomía, pausas activas y beneficios deportivos. También impulsa un **Ambiente Positivo** con canales de feedback confidencial y eventos de integración, además de asegurar el **Desarrollo Profesional** con formación interna, planes de carrera y programas de mentoreo.
+                    Desde el Sindicato de Trabajadores Municipales (STM), consideramos el Bienestar Integral como un derecho fundamental y una conquista colectiva. Este sitio es tu portal de recursos, diseñado para garantizar que cada compañero y compañera desarrolle sus tareas en un entorno laboral **digno, seguro y satisfactorio**, promoviendo el equilibrio personal y ofreciendo herramientas concretas para el crecimiento físico y profesional. Además, aseguramos el **Apoyo Psicoemocional Confidencial** mediante una red de ayuda y recursos directos, porque la salud mental es un pilar irrenunciable de nuestro bienestar general. El STM está acá para acompañarte y luchar por condiciones que fortalezcan tu desarrollo integral y tu carrera.
                 </p>
             </div>
         </section>
-
-        <!-- 2. Sección de Apoyo Psicosocial (RESUMIDA - Dos párrafos) -->
-        <section id="apoyo-psicosocial" class="mb-12">
-            <div class="section-header-teal rounded-t-lg shadow-lg">
-                <i data-lucide="brain-circuit" class="mr-3 w-7 h-7"></i>
-                Apoyo Psicosocial: Recursos Confidenciales
-            </div>
-            <div class="content-card rounded-b-lg">
-                 <!-- Primer párrafo del resumen: Introducción y Confidencialidad -->
-                <p class="mb-4 text-lg font-semibold text-red-700">
-                    Si estás atravesando un momento difícil, recordá que hay recursos confidenciales disponibles para vos. Pedir ayuda es un acto de fortaleza.
-                </p>
-                 <!-- Segundo párrafo del resumen: Puntos clave -->
-                <p class="text-lg font-medium text-gray-700">
-                    El área de **Apoyo Psicosocial** ofrece recursos confidenciales de ayuda inmediata. Los puntos clave son la **Gestión del Estrés** con técnicas de relajación, *workshops* de Mindfulness y recursos auditivos, y la provisión de una **Línea de Asesoramiento Confidencial 24/7**. Adicionalmente, se brindan **Herramientas Digitales** como *apps* de meditación y *eBooks* de autoayuda, y se instruye sobre las **Señales de Advertencia** (*Burnout*) con protocolos para sugerir asistencia a colegas.
-                </p>
-            </div>
-        </section>
+        
         
     </div>
 
     <footer class="text-center text-gray-500 text-sm mt-12 mb-4">
         © 2024 Programa de Bienestar - [Nombre de la Empresa/Sindicato]
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
+    <footer class="text-center text-gray-500 text-sm mt-12 mb-4">
+        © 2025 STM - Sindicato de Trabajadores Municipales
     </footer>
 
     <!-- Inicializar los iconos de Lucide -->
