@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienestar y Apoyo Psicosocial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Definición de colores institucionales basados en tu ejemplo */
+        :root {
+            --stm-purple: #5A377B; /* Púrpura principal */
+            --stm-teal: #34B3C5;   /* Celeste secundario */
+            --stm-bg-light: #f8f9fa; /* Fondo claro */
+        }
+        
+        /* Configuración global del cuerpo */
+        body { 
+            background-color: var(--stm-bg-light); 
+            font-family: 'Roboto', sans-serif; 
+            line-height: 1.6;
+            color: #34495e; /* Texto oscuro para buena legibilidad */
+        }
+
+        /* Títulos principales */
+        .h1-purple {
+            color: var(--stm-purple);
+            font-weight: 900;
+        }
+
+        /* Estilo para los botones principales */
+        .btn-purple {
+            background-color: var(--stm-purple);
+            border: 2px solid var(--stm-purple);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .btn-purple:hover {
+            background-color: #492a63;
+            border-color: #492a63;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Estilo para tarjetas de contenido (cards) */
+        .content-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Estilo específico para los headers de sección */
+        .section-header-teal {
+            background-color: var(--stm-teal);
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Estilo para la lista de puntos dentro de las subsecciones */
+        .bullet-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            list-style: none; /* Elimina el bullet por defecto */
+        }
+        .bullet-list li::before {
+            content: '✓'; 
+            color: var(--stm-purple); 
+            font-weight: 700;
+            position: absolute;
+            left: 0;
+        }
+
+        /* ANIMACIÓN DE PARPADEO/PULSO MÁS INTENSA Y ROJIZA (COMO EMERGENCIA) */
+        @keyframes emergency-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); /* Rojo Vivo */
+            }
+            50% {
+                box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); /* Pulso más grande */
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); 
+            }
+        }
+
+        .btn-pulse {
+            animation: emergency-pulse 1.5s infinite; /* Animación más rápida */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        
+        <header class="text-center mb-10">
+            <div class="logo-container mb-4">
+                <img src="logo_STM.png" alt="Logo de la Empresa" class="mx-auto rounded-lg shadow-md">
+            </div>
+            <h1 class="h1-purple text-4xl sm:text-5xl border-b-4 border-stm-teal pb-2 inline-block">
+                Secretaría de Género y Diversidad STM
+            </h1>
+            <p class="mt-2 text-xl text-gray-600">
+                Tu salud y equilibrio son nuestra prioridad.
+            </p>
+        </header>
+ <div class="text-center mt-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-stm-purple">
+            <h3 class="text-3xl font-extrabold text-gray-800 mb-4">
+                Formas de contacto
+            </h3>
+            <p class="mb-5 text-lg font-semibold text-gray-600">
+                Accedé a nuestros recursos de apoyo confidencial o a las guías de bienestar laboral.
+            </p>
+            <div class="bg-purple-100 border-l-4 border-stm-purple p-4 mb-6 rounded-md">
+                    <p class="font-bold text-lg text-stm-purple mb-2">
+                        Línea de Asistencia para consultas (Interna/Externa):
+                    </p>
+                    <p class="text-xl font-extrabold text-gray-900">
+                        📞 (223) 472 3756 / 9815 int .... * o celular
+                    </p>
+                    <p class="text-sm italic mt-1">
+                        Servicio confidencial.
+                    </p>
+                </div>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+                <a href="#apoyo-psicosocial" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-red-700 hover:border-red-700">
+                    <i data-lucide="hand-heart" class="inline-block mr-2 w-5 h-5"></i>
+                    Apoyo Psicoemocional
+                </a>
+                
+                <a href="#bienestar-laboral" class="inline-block btn-purple btn-pulse py-3 px-6 text-xl rounded-full font-bold shadow-2xl hover:bg-teal-700 hover:border-teal-700">
+                    <i data-lucide="sun" class="inline-block mr-2 w-5 h-5"></i>
+                    Guía de Bienestar Laboral
+                </a>
+            </div>
+
+            <p class="mt-8 text-lg border-t pt-4">
+                O si preferís hacer una consulta general:
+            </p>
+            <a href="#" class="inline-block btn-purple py-2 px-6 text-lg rounded-full font-bold shadow-md opacity-80 hover:opacity-100">
+                ¡Ir al Formulario de Contacto!
+            </a>
+        </div>
+        <section id="bienestar-laboral" class="mb-12">
+            <div class="section-header-teal rounded-t-lg shadow-lg">
+                <i data-lucide="briefcase-business" class="mr-3 w-7 h-7"></i>
+                Bienestar Laboral: Prevención y Entorno Positivo
+            </div>
+            <div class="content-card rounded-b-lg">
+                <p class="mb-6 text-lg">
+                    Nos enfocamos en crear un ambiente donde el trabajo sea productivo y satisfactorio, promoviendo hábitos saludables y crecimiento continuo.
+                </p>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="balance" class="mr-2 w-6 h-6"></i>
+                    1. Conciliación Vida Laboral y Personal
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Flexibilidad Horaria:** Opciones para ajustar tus horarios de entrada y salida.</li>
+                    <li>**Teletrabajo:** Políticas y guías para el trabajo remoto.</li>
+                    <li>**Desconexión Digital:** Pautas para respetar tu tiempo de descanso.</li>
+                    <li>**Licencias Especiales:** Información sobre licencias por estudio o asuntos personales/familiares.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="dumbbell" class="mr-2 w-6 h-6"></i>
+                    2. Salud Física
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Ergonomía:** Guías rápidas para configurar tu puesto de trabajo.</li>
+                    <li>**Pausas Activas:** Rutinas de estiramiento de 5 minutos durante la jornada.</li>
+                    <li>**Nutrición:** Recetarios y tips para una alimentación saludable.</li>
+                    <li>**Beneficios Deportivos:** Descuentos en gimnasios y actividades físicas.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="smile" class="mr-2 w-6 h-6"></i>
+                    3. Ambiente de Trabajo Positivo
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Cultura de Reconocimiento:** Cómo nominar a un compañero para el premio del mes.</li>
+                    <li>**Comunicación Abierta:** Canales para sugerencias y feedback confidencial.</li>
+                    <li>**Eventos de Integración:** Calendario de actividades sociales y de *team building*.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="graduation-cap" class="mr-2 w-6 h-6"></i>
+                    4. Desarrollo Profesional
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Formación Interna:** Acceso a cursos y capacitaciones online.</li>
+                    <li>**Planes de Carrera:** Oportunidades de crecimiento y promoción interna.</li>
+                    <li>**Mentoreo:** Detalles sobre el programa de acompañamiento profesional.</li>
+                </ul>
+
+            </div>
+        </section>
+
+        <section id="apoyo-psicosocial" class="mb-12">
+            <div class="section-header-teal rounded-t-lg shadow-lg">
+                <i data-lucide="brain-circuit" class="mr-3 w-7 h-7"></i>
+                Apoyo Psicosocial: Recursos Confidenciales
+            </div>
+            <div class="content-card rounded-b-lg">
+                <p class="mb-6 text-lg font-semibold text-red-700">
+                    Si estás atravesando un momento difícil, recordá que hay recursos confidenciales disponibles para vos. Pedir ayuda es un acto de fortaleza.
+                </p>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="sun-dim" class="mr-2 w-6 h-6"></i>
+                    1. Gestión del Estrés y la Ansiedad
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Técnicas de Respiración:** Guía rápida para la relajación inmediata.</li>
+                    <li>**Workshops:** Talleres de Mindfulness y manejo emocional programados.</li>
+                    <li>**Recursos Auditivos:** Playlist para concentración y alivio del estrés.</li>
+                </ul>
+                
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="phone-call" class="mr-2 w-6 h-6"></i>
+                    2. Asesoramiento Confidencial (Línea de Ayuda 24/7)
+                </h3>
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="bookmark" class="mr-2 w-6 h-6"></i>
+                    3. Recursos y Herramientas Digitales
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**App de Meditación:** Enlace de descarga con código de acceso premium.</li>
+                    <li>**Guía de Autoayuda:** Descargá el *eBook* sobre resiliencia emocional.</li>
+                    <li>**Artículos:** Últimas publicaciones sobre salud mental en el entorno laboral.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-stm-teal mb-3 flex items-center">
+                    <i data-lucide="eye" class="mr-2 w-6 h-6"></i>
+                    4. Señales de Advertencia y Cómo Actuar
+                </h3>
+                <ul class="bullet-list ml-4 mb-6 text-gray-700">
+                    <li>**Identificar Agotamiento (Burnout):** Criterios clave y síntomas de alerta.</li>
+                    <li>**Protocolo de Derivación:** Pasos para sugerir a un colega que solicite asistencia.</li>
+                    <li>**Autoevaluación Rápida:** Test confidencial para medir tu nivel de estrés actual.</li>
+                </ul>
+            </div>
+        </section>
+        
+       
+
+    </div>
+
+    <footer class="text-center text-gray-500 text-sm mt-12 mb-4">
+        © 2024 Programa de Bienestar - [Nombre de la Empresa/Sindicato]
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
