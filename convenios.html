@@ -343,7 +343,7 @@
                     <!-- Mensaje de no resultados (oculto por defecto) -->
                     <div id="noResults" class="hidden text-center p-10 bg-gray-100 rounded-lg shadow-md border border-gray-300 mt-6 flex-shrink-0">
                         <i class="fas fa-search-minus text-4xl text-gray-500"></i>
-                        <p class="mt-4 text-gray-700 font-bold">¡Uy! No hay convenios en este rubro.</p>
+                        <p class="mt-4 text-gray-700 font-bold">No hay convenios en este rubro.</p>
                         <p class="text-sm text-gray-600">Probá seleccionando "TODOS" en los rubros de arriba.</p>
                     </div>
                     
@@ -353,13 +353,14 @@
         
         <!-- FOOTER (ESTÁTICO) - TEXTO Y AÑO ACTUALIZADOS -->
         <footer class="p-4 text-center text-xs text-gray-500 border-t mt-auto bg-gray-50 flex-shrink-0">
-            <p>&copy; 2025 STM Sindicato de Trabajadores Municipales</p>
-        </footer>
+    <p class="text-sm font-medium text-gray-700 mb-1">Los convenios pueden modificarse sin previo aviso</p>
+    <p>&copy; 2025 STM Sindicato de Trabajadores Municipales</p>
+</footer>
     </div>
 
     <script>
         // La URL de tu AppScript que devuelve los datos de los convenios
-        const APPSSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgD9-ggtZjFyK7I4FfwLETVtj5TUBvQIZWF5om5yAKLhj4BuerpbdHN-3PnTfLDzdxBA/exec'; 
+        const APPSSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFF-ZTptmhjFBItUzfh2CCkjycg485z2amS-girpV5hRF3JLZwWgD1yhgl63uABPwskA/exec'; 
 
         const flipContainer = document.getElementById('flipContainer');
         const conveniosList = document.getElementById('conveniosList');
